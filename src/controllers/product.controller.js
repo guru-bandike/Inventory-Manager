@@ -1,4 +1,4 @@
-import ProductModel from '../models/products.model.js';
+import ProductModel from '../models/product.model.js';
 
 // Controller for managing views and products
 export default class ProductsController {
@@ -52,20 +52,15 @@ export default class ProductsController {
       imageUrl: 'images/' + req.file.filename,
     };
 
-    // Check if the product is updated
-    const isUpdated = ProductModel.update(updatedProduct);
+    // Update product using product model
+    ProductModel.update(updatedProduct);
 
-    // If the product is updated, Render the 'update-product' view with updatedProduct and a success message
-    if (isUpdated) {
-      return res.render('update-product', {
-        validationErrors: null,
-        successMessage: 'Product Updated Successfully!',
-        product: updatedProduct,
-      });
-    }
-
-    // If the product not updated, send product not found response
-    res.status(404).send('Product not found!');
+    // Render update-product vew with success message
+    res.render('update-product', {
+      validationErrors: null,
+      successMessage: 'Product Updated Successfully!',
+      product: updatedProduct,
+    });
   }
 
   // Handle delete product request
@@ -80,7 +75,7 @@ export default class ProductsController {
       const products = ProductModel.getAll(); // Get all existing products from the Product module
       return res.render('products', { products, successMessage: 'Product Successfully deleted!' });
     }
-    
+
     // If the product not deleted, send product not found response
     res.status(404).send('Product not found!');
   }
