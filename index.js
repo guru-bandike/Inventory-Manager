@@ -7,6 +7,7 @@ import expressEjsLayouts from 'express-ejs-layouts';
 import validateProduct from './src/middleweres/validateProduct.validation.middleware.js';
 import validateDeleteRequest from './src/middleweres/deleteProduct.validation.middleware.js';
 import checkProductExists from './src/middleweres/checkProductExists.validation.middleware.js';
+import { uploadFile } from './src/middleweres/file-upload.middleware.js';
 
 // Create Express server instance
 const server = express();
@@ -18,7 +19,7 @@ server.use(express.json()); // Parse imcoming JSON bodies
 server.use(express.urlencoded({ extended: true })); // Parse imcoming URL-encoded bodies
 server.use(expressEjsLayouts); // Use EJS layouts for redering views with layouts
 
-server.set('view engine', 'ejs'); // Set EJS as view-engine 
+server.set('view engine', 'ejs'); // Set EJS as view-engine
 server.set('views', path.join(path.resolve(), 'src', 'views')); // Set views directory path
 
 // Define routes and corresponding controllers
@@ -27,8 +28,18 @@ server.get('/products', ProductsController.getProductsView);
 server.get('/add-product', ProductsController.getAddFormView);
 server.get('/update-product/:id', checkProductExists, ProductsController.getUpdateProductView);
 server.post('/delete-product/:id', validateDeleteRequest, ProductsController.deleteProduct);
-server.post('/add-product', validateProduct('add-product'), ProductsController.postAddProduct);
-server.post('/update-product/:id', validateProduct('update-product'), ProductsController.postUpdateProduct);
+server.post(
+  '/add-product',
+  uploadFile.single('imageUrl'),
+  validateProduct('add-product'),
+  ProductsController.postAddProduct
+);
+server.post(
+  '/update-product/:id',
+  uploadFile.single('imageUrl'),
+  validateProduct('update-product'),
+  ProductsController.postUpdateProduct
+);
 
 // Start the server and listen on port 3400
 server.listen(3400, () => {

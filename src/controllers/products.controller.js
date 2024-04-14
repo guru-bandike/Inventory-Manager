@@ -24,7 +24,13 @@ export default class ProductsController {
 
   // Handle add new product request
   static postAddProduct(req, res) {
-    const newProductObj = req.body; // Extract new product object from request body
+    // Extract and store new product details from request body and file
+    const newProductObj = {
+      name: req.body.name,
+      description: req.body.description,
+      price: req.body.price,
+      imageUrl: 'images/' + req.file.filename,
+    };
     ProductModel.add(newProductObj); // Add new product using product model
 
     // Render add-product view with success message
@@ -37,7 +43,14 @@ export default class ProductsController {
 
   // Handle update product request
   static postUpdateProduct(req, res) {
-    const updatedProduct = req.body; // Extract product id from request body
+    // Extract and store updated product details from request body and file
+    const updatedProduct = {
+      id: req.body.id,
+      name: req.body.name,
+      description: req.body.description,
+      price: req.body.price,
+      imageUrl: 'images/' + req.file.filename,
+    };
 
     // Check if the product is updated
     const isUpdated = ProductModel.update(updatedProduct);
@@ -50,7 +63,7 @@ export default class ProductsController {
         product: updatedProduct,
       });
     }
-    
+
     // If the product not updated, send product not found response
     res.status(404).send('Product not found!');
   }
