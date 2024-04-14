@@ -48,7 +48,7 @@ export default class ProductModel {
   }
 
   // Check if product exists
-  static exists(id) {
+  static isExists(id) {
     return products.some((product) => product.id == id);
   }
 }
