@@ -9,7 +9,7 @@ const ensureUserNotExists = (req, res, next) => {
 
   // If user exists, render registration view with error message
   if (isUserExists) {
-    res.render('register', { validationErrors: [{ msg: 'A user with this email already exists.' }] });
+    res.render('register', { errorMessage: 'A user with this email already exists.' });
   } else {
     // If user does not exists, proceed to next middleware
     next();

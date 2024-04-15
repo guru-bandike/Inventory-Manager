@@ -4,12 +4,12 @@ import UserModel from '../models/user.model.js';
 export default class UserController {
   // Render rigistration view
   static getRegistrationView(req, res) {
-    res.render('register', { validationErrors: null });
+    res.render('register');
   }
 
   // Render login view
   static getLoginView(req, res) {
-    res.render('login', { validationErrors: null, successMessage: null });
+    res.render('login');
   }
 
   // Handle user registration request
@@ -22,16 +22,27 @@ export default class UserController {
   }
 
   // Handle login request
-  static postLoginRequest(req, res) {
+  static login(req, res) {
     const { email, password } = req.body; // Extract user details from reqest body
     const isValid = UserModel.isValid(email, password); // Check if user is valid
 
     // If user is valid, redirect to the home view
     if (isValid) {
+      req.session.userEmail = email;
       res.redirect('/');
     } else {
       // If user is not valid, Render login view with an error message
-      res.render('login', { validationErrors: [{ msg: 'Incorrect credentials' }], successMessage: null });
+      res.render('login', { errorMessage: 'Incorrect credentials' });
     }
+  }
+
+  static logout(req, res) {
+    req.session.destroy( (err) => {
+      if (err) {
+        console.error(err);
+      } else {
+        res.redirect('/login');
+      }
+    });
   }
 }
