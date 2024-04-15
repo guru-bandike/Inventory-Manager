@@ -4,53 +4,49 @@ import ProductModel from '../models/product.model.js';
 export default class ProductsController {
   // Render products view
   static getProductsView(req, res) {
-    const products = ProductModel.getAll();
-    res.render('products', { products, successMessage: null });
+    const products = ProductModel.getAll(); // Get all existing products using product model
+    const isLoggedIn = getUserLoginStatus(req); // Get user login status
+    res.render('products', { products, isLoggedIn }); // Render products view with existing products
   }
 
   // Render add product form view
   static getAddFormView(req, res) {
-    res.render('add-product', { validationErrors: null, successMessage: null, product: {} });
+    const isLoggedIn = getUserLoginStatus(req); // Get user login status
+    res.render('add-product', { product: {}, isLoggedIn });
   }
 
   // Render update product view
   static getUpdateProductView(req, res) {
     const id = req.params.id; // Extract product id from request parameters
     const requestedProduct = ProductModel.getById(id); // Get product from the Product module
+    const isLoggedIn = getUserLoginStatus(req); // Get user login status
 
     // Render 'update-product' view with requested product
-    res.render('update-product', { product: requestedProduct, validationErrors: null, successMessage: null });
+    res.render('update-product', { product: requestedProduct, isLoggedIn });
   }
 
   // Handle add new product request
   static postAddProduct(req, res) {
-    // Extract and store new product details from request body and file
-    const newProductObj = {
-      name: req.body.name,
-      description: req.body.description,
-      price: req.body.price,
-      imageUrl: 'images/' + req.file.filename,
-    };
+    const { name, description, price } = req.body; // Extract new product details from request body
+    const imageUrl = 'images/' + req.file.filename; // Construct product image url
+    const newProductObj = { name, description, price, imageUrl }; // Create new product object
+    const isLoggedIn = getUserLoginStatus(req); // Get user login status
     ProductModel.add(newProductObj); // Add new product using product model
 
     // Render add-product view with success message
     res.render('add-product', {
-      validationErrors: null,
       successMessage: 'Product Added Successfully!',
       product: {},
+      isLoggedIn,
     });
   }
 
   // Handle update product request
   static postUpdateProduct(req, res) {
-    // Extract and store updated product details from request body and file
-    const updatedProduct = {
-      id: req.body.id,
-      name: req.body.name,
-      description: req.body.description,
-      price: req.body.price,
-      imageUrl: 'images/' + req.file.filename,
-    };
+    const { name, description, price } = req.body; // Extract new product details from request body
+    const imageUrl = 'images/' + req.file.filename; // Construct product image url
+    const updatedProduct = { name, description, price, imageUrl }; // Create updated product object
+    const isLoggedIn = getUserLoginStatus(req); // Get user login status
 
     // Update product using product model
     ProductModel.update(updatedProduct);
@@ -60,23 +56,25 @@ export default class ProductsController {
       validationErrors: null,
       successMessage: 'Product Updated Successfully!',
       product: updatedProduct,
+      isLoggedIn,
     });
   }
 
   // Handle delete product request
   static deleteProduct(req, res) {
     const productId = req.params.id; // Extract product id from request body
+    const isLoggedIn = getUserLoginStatus(req); // Get user login status
 
-    // Check if the product is deleted
-    const isDeleted = ProductModel.delete(productId);
+    // Delete requsted product using product model
+    ProductModel.delete(productId);
 
-    // If the product is deleted, Render the 'products' view with all existing products and a success message
-    if (isDeleted) {
-      const products = ProductModel.getAll(); // Get all existing products from the Product module
-      return res.render('products', { products, successMessage: 'Product Successfully deleted!' });
-    }
-
-    // If the product not deleted, send product not found response
-    res.status(404).send('Product not found!');
+    const products = ProductModel.getAll(); // Get all existing products using Product module
+    // Render products view with success message
+    return res.render('products', { products, successMessage: 'Product Successfully deleted!', isLoggedIn });
   }
+}
+
+// Helper function to get user login status
+function getUserLoginStatus(req) {
+  return req.session.userEmail ? true : false;
 }

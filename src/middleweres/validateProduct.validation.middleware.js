@@ -43,7 +43,6 @@ const validateProduct = (viewName) => {
       const requestedProduct = req.body;
       res.render(viewName, {
         validationErrors: validationErrors.array(),
-        successMessage: null,
         product: requestedProduct,
       });
     }

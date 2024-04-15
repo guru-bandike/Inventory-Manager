@@ -2,9 +2,11 @@
 
 <h1 class="mt-5 mb-4 header">Add New Product</h1>
 
-<% if (successMessage) { %>
+<% if (locals.successMessage) { %>
 <div class="alert alert-success" role="alert"><%= successMessage %></div>
-<% } %> <% if (validationErrors) { %>
+<% } %> 
+
+<% if (locals.validationErrors) { %>
 <div class="alert alert-danger" role="alert">
   <% validationErrors.forEach((error) => { %>
   <p>• <%= error.msg %></p>

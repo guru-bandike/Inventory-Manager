@@ -1,1 +1,4 @@
 <h1> This is HOME page</h1>
+<% if (locals.lastVisit) { %>
+    <div class="alert alert-info" role="alert"> Your last visit: <%= lastVisit %></div>
+<% } %>

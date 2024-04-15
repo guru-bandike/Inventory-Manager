@@ -1,6 +1,12 @@
 <h1 class="mt-5 mb-4 header">Register</h1>
 
-<% if (validationErrors) { %>
+<% if (locals.errorMessage) { %>
+  <div class="alert alert-danger" role="alert">
+    <%= errorMessage %>
+  </div>
+<% } %>
+
+<% if (locals.validationErrors) { %>
   <div class="alert alert-danger" role="alert">
     <% validationErrors.forEach((error) => { %>
       <p>• <%= error.msg %></p>
