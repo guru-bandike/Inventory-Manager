@@ -1,9 +1,12 @@
 // Define and export ProductModel class for managing products data
 export default class ProductModel {
+  
+  // Initialize Id counter static variable to track last product id
+  static idCounter = 0;
 
   // Constructor to initialize product properties
-  constructor(_id, _name, _description, _price, _imageUrl) {
-    this.id = _id;
+  constructor(_name, _description, _price, _imageUrl) {
+    this.id = ++ProductModel.idCounter; // Generate unique id for every new product
     this.name = _name;
     this.description = _description;
     this.price = _price;
@@ -18,7 +21,6 @@ export default class ProductModel {
   // Add new product
   static add(newProductObj) {
     const newProduct = new ProductModel(
-      products.length + 1,
       newProductObj.name,
       newProductObj.description,
       newProductObj.price,
@@ -55,21 +57,18 @@ export default class ProductModel {
 // Array of products
 var products = [
   new ProductModel(
-    1,
     'Product 1',
     'Description for Product 1',
     19.99,
     'https://m.media-amazon.com/images/I/51-nXsSRfZL._SX328_BO1,204,203,200_.jpg'
   ),
   new ProductModel(
-    2,
     'Product 2',
     'Description for Product 2',
     29.99,
     'https://m.media-amazon.com/images/I/51xwGSNX-EL._SX356_BO1,204,203,200_.jpg'
   ),
   new ProductModel(
-    3,
     'Product 3',
     'Description for Product 3',
     39.99,
